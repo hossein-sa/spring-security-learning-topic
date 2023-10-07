@@ -1,6 +1,9 @@
 package ir.hsadeghi.security.auth;
 
 import ir.hsadeghi.security.config.JwtService;
+import ir.hsadeghi.security.token.Token;
+import ir.hsadeghi.security.token.TokenRepository;
+import ir.hsadeghi.security.token.TokenType;
 import ir.hsadeghi.security.user.Role;
 import ir.hsadeghi.security.user.User;
 import ir.hsadeghi.security.user.UserRepository;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -26,11 +30,23 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-        repository.save(user);
+        var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
+        saveUserToken(savedUser, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -44,6 +60,8 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        saveUserToken(user,jwtToken);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
