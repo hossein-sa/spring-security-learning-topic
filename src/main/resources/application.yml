@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    # Database URL
+    url: jdbc:postgresql://localhost:5432/jwt_security
+
+    # Database username
+    username: postgres
+
+    # Database password
+    password: postgres
+
+    # Database driver class
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Create, drop, or validate the database schema on startup
+      ddl-auto: create-drop
+
+    # Show SQL queries in the console
+    show-sql: true
+
+    properties:
+      hibernate:
+        # Format SQL queries for better readability
+        format_sql: true
+
+    # Specify the database type
+    database: postgresql
+
+    # Specify the Hibernate dialect for PostgreSQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
