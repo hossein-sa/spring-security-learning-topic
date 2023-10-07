@@ -1,5 +1,6 @@
 package ir.hsadeghi.security.user;
 
+import ir.hsadeghi.security.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,8 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role; // User's role (you should have an enum called 'Role' defined)
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     // Override methods from UserDetails interface for Spring Security
 
