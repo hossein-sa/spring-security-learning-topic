@@ -22,6 +22,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    // Register a new user
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstname(request.getFirstname())
@@ -38,6 +39,7 @@ public class AuthenticationService {
                 .build();
     }
 
+    // Authenticate a user and generate a JWT token
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -47,7 +49,8 @@ public class AuthenticationService {
         );
 
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(); // Handle if the user is not found
+
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
@@ -57,6 +60,7 @@ public class AuthenticationService {
                 .build();
     }
 
+    // Revoke all tokens for a user
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
         if (validUserTokens.isEmpty()) {
@@ -69,6 +73,7 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
+    // Save a new user token
     private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
