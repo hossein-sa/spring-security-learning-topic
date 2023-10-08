@@ -18,12 +18,12 @@ spring:
       ddl-auto: create-drop
 
     # Show SQL queries in the console
-    show-sql: true
+    show-sql: false
 
     properties:
       hibernate:
         # Format SQL queries for better readability
-        format_sql: true
+        format_sql: false
 
     # Specify the database type
     database: postgresql
