@@ -37,3 +37,12 @@ logging:
   level:
     root: INFO # Adjust the root log level as needed
     ir.hsadeghi.security.config.JwtAuthenticationFilter: DEBUG
+
+
+application:
+  security:
+    jwt:
+      secret-key: 29a898eedc3bff730347db73626c92fb8f0c32f2549d8bb847a2fd6217e69331
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604000000 # 7 days
