@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Integer> {
+    // Custom JPQL query to find all valid tokens for a specific user
     @Query("""
                 select t from  Token t inner join User u on t.user.id = u.id
                 where u.id = :userId and (t.expired = false or t.revoked = false)

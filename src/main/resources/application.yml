@@ -1,3 +1,4 @@
+# Database Configuration
 spring:
   datasource:
     # Database URL
@@ -31,18 +32,25 @@ spring:
     # Specify the Hibernate dialect for PostgreSQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-
-# application.yml
+# Logging Configuration
+# Adjust the log levels as needed for different packages/classes.
 logging:
   level:
-    root: INFO # Adjust the root log level as needed
-    ir.hsadeghi.security.config.JwtAuthenticationFilter: DEBUG
+    root: INFO # Root log level is set to INFO
+    ir.hsadeghi.security.config.JwtAuthenticationFilter: DEBUG # Detailed logs for JwtAuthenticationFilter
 
 
+# Application-specific Configuration
 application:
   security:
     jwt:
+      # Secret key for JWT token signing and verification
       secret-key: 29a898eedc3bff730347db73626c92fb8f0c32f2549d8bb847a2fd6217e69331
-      expiration: 86400000 # a day
+
+      # Expiration time for JWT tokens (in milliseconds)
+      expiration: 86400000 # 1 day
+
+      # Configuration for JWT refresh tokens
       refresh-token:
+        # Expiration time for refresh tokens (in milliseconds)
         expiration: 604000000 # 7 days
