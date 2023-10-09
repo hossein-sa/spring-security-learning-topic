@@ -30,7 +30,7 @@ public class SecurityApplication {
 					.password("password")
 					.role(ADMIN)
 					.build();
-			System.out.println("ADMIN token: " + service.register(admin).getAccessToken());
+			System.out.println("Admin token: " + service.register(admin).getAccessToken());
 
 
 			var manager = RegisterRequest.builder()
