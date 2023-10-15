@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import static ir.hsadeghi.security.user.Permission.*;
 
 @RequiredArgsConstructor
-@Getter
 public enum Role {
+
     USER(Collections.emptySet()),
     ADMIN(
             Set.of(
@@ -25,7 +25,6 @@ public enum Role {
                     MANAGER_UPDATE,
                     MANAGER_DELETE,
                     MANAGER_CREATE
-
             )
     ),
     MANAGER(
@@ -34,20 +33,20 @@ public enum Role {
                     MANAGER_UPDATE,
                     MANAGER_DELETE,
                     MANAGER_CREATE
-
             )
     )
 
     ;
 
+    @Getter
     private final Set<Permission> permissions;
 
-    public List<SimpleGrantedAuthority> getAuthorities(){
-       var authorities =  getPermissions()
+    public List<SimpleGrantedAuthority> getAuthorities() {
+        var authorities = getPermissions()
                 .stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
-       return authorities;
+        return authorities;
     }
 }
