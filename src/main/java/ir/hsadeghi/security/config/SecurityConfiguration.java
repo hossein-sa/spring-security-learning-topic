@@ -25,6 +25,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    // Define an array of white-listed URLs that do not require authentication
     private static final String[] WHITE_LIST_URLS = {"/api/v1/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
@@ -40,12 +41,16 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
+    // Create a SecurityFilterChain bean that configures security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Disable CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URLS)
+                        req
+                                // Configure permissions for various endpoints
+                                .requestMatchers(WHITE_LIST_URLS)
                                 .permitAll()
                                 .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
                                 .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
@@ -55,17 +60,20 @@ public class SecurityConfiguration {
                                 .anyRequest()
                                 .authenticated()
                 )
+                // Set session creation policy to STATELESS (no sessions)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                // Configure the authentication provider
                 .authenticationProvider(authenticationProvider)
+                // Add a JWT authentication filter before the standard UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                // Configure logout settings
                 .logout(logout ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout
+                                .logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 );
 
         return http.build();
-
-
     }
 }
