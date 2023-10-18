@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                                 // Configure permissions for various endpoints
                                 .requestMatchers(WHITE_LIST_URLS)
                                 .permitAll()
+                                .requestMatchers("/api/v1/demo/**").hasAnyRole(ADMIN.name(),MANAGER.name())
                                 .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
                                 .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
                                 .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
